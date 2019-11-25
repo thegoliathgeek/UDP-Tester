@@ -57,22 +57,22 @@ class _MyApp extends State<MyApp> {
                         status = 'Listening';
                         ob = new UDPTester.initialize(
                             ipText.text, int.parse(portText.text));
-                        ob.bind().then((RawDatagramSocket socket) {
-                          socket.joinMulticast(ob.address);
+                      });
+                      ob.bind().then((RawDatagramSocket socket) {
+                        socket.joinMulticast(ob.address);
 
-                          socket.listen((RawSocketEvent e) {
-                            Datagram d = socket.receive();
-                            if (d == null) return;
-                            setState(() {
-                              data.add(new String.fromCharCodes(d.data).trim());
-                            });
-                            String message =
-                                new String.fromCharCodes(d.data).trim();
-                            print(
-                                'Datagram from ${d.address.address}:${d.port}: $message');
-                            socket.send('Got message'.codeUnits,
-                                new InternetAddress(d.address.address), d.port);
+                        socket.listen((RawSocketEvent e) {
+                          Datagram d = socket.receive();
+                          if (d == null) return;
+                          setState(() {
+                            data.add(new String.fromCharCodes(d.data).trim());
                           });
+                          String message =
+                          new String.fromCharCodes(d.data).trim();
+                          print(
+                              'Datagram from ${d.address.address}:${d.port}: $message');
+                          socket.send('Got message'.codeUnits,
+                              new InternetAddress(d.address.address), d.port);
                         });
                       });
                     }
