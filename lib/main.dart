@@ -68,7 +68,7 @@ class _MyApp extends State<MyApp> {
                             data.add(new String.fromCharCodes(d.data).trim());
                           });
                           String message =
-                          new String.fromCharCodes(d.data).trim();
+                              new String.fromCharCodes(d.data).trim();
                           print(
                               'Datagram from ${d.address.address}:${d.port}: $message');
                           socket.send('Got message'.codeUnits,
@@ -83,6 +83,15 @@ class _MyApp extends State<MyApp> {
                   onPressed: () {
                     setState(() {
                       data.clear();
+                    });
+                  },
+                ),
+                RaisedButton(
+                  child: Text('Send'),
+                  onPressed: () {
+                    RawDatagramSocket.bind(ob.address, ob.port).then((RawDatagramSocket socket){
+                      socket.send('Something'.codeUnits, ob.address, ob.port);
+                      socket.close();
                     });
                   },
                 )
