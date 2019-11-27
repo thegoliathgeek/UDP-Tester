@@ -16,7 +16,7 @@ class MyApp extends StatefulWidget {
 
 class _MyApp extends State<MyApp> {
   String status = 'Not Listening';
-  List<String> data = ['some'];
+  List<String> data = [''];
   UDPTester ob;
   final ipText = TextEditingController();
   final portText = TextEditingController();
@@ -31,15 +31,32 @@ class _MyApp extends State<MyApp> {
       body: Center(
         child: Column(
           children: <Widget>[
-            TextField(
-              controller: ipText,
-              decoration: InputDecoration(
-                  border: InputBorder.none, hintText: 'Enter a IP'),
-            ),
-            TextField(
-              controller: portText,
-              decoration: InputDecoration(
-                  border: InputBorder.none, hintText: 'Enter a PORT'),
+            Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  Container(
+                      width: 150,
+                      child: TextField(
+                        controller: ipText,
+                        autofocus: true,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                            border: InputBorder.none, hintText: 'Enter a IP'),
+                      )),
+//                  SizedBox(
+//                    height: 18,
+//                  ),
+                  Container(
+                      width: 150,
+                      child: TextFormField(
+                        controller: portText,
+                        decoration: InputDecoration(
+                            border: InputBorder.none, hintText: 'Enter a PORT'),
+                        keyboardType: TextInputType.number,
+                      )),
+                ]),
+            SizedBox(
+              height: 18,
             ),
             Text(status),
             Row(
@@ -89,7 +106,8 @@ class _MyApp extends State<MyApp> {
                 RaisedButton(
                   child: Text('Send'),
                   onPressed: () {
-                    RawDatagramSocket.bind(ob.address, ob.port).then((RawDatagramSocket socket){
+                    RawDatagramSocket.bind(ob.address, ob.port)
+                        .then((RawDatagramSocket socket) {
                       socket.send('Something'.codeUnits, ob.address, ob.port);
                       socket.close();
                     });
