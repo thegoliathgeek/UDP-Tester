@@ -4,6 +4,7 @@ import 'package:udp_app/udpmulti.dart';
 import 'dart:io';
 
 void main() => runApp(MaterialApp(
+      theme: ThemeData(primarySwatch: Colors.lightBlue),
       home: MyApp(),
     ));
 
@@ -18,8 +19,21 @@ class _MyApp extends State<MyApp> {
   String status = 'Not Listening';
   List<String> data = [''];
   UDPTester ob;
+  UDPTester obSend;
   final ipText = TextEditingController();
   final portText = TextEditingController();
+  final sendText = TextEditingController();
+
+  void sendData({data: String}) {
+    obSend = new UDPTester.initialize(ipText.text, int.parse(portText.text));
+    RawDatagramSocket.bind(ob.address, ob.port)
+        .then((RawDatagramSocket socket) {
+      socket.send(data.codeUnits, ob.address, ob.port);
+      socket.close();
+    });
+    print('onSend set to null');
+    obSend = null;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,10 +62,12 @@ class _MyApp extends State<MyApp> {
 //                  ),
                   Container(
                       width: 150,
-                      child: TextFormField(
+                      child: TextField(
                         controller: portText,
                         decoration: InputDecoration(
-                            border: InputBorder.none, hintText: 'Enter a PORT'),
+//                            icon: Icon(Icons.dashboard),
+                            border: InputBorder.none,
+                            hintText: 'Enter a PORT'),
                         keyboardType: TextInputType.number,
                       )),
                 ]),
@@ -96,23 +112,13 @@ class _MyApp extends State<MyApp> {
                   },
                 ),
                 RaisedButton(
-                  child: Text('Clear'),
+                  child: Text('Clear Console'),
                   onPressed: () {
                     setState(() {
                       data.clear();
                     });
                   },
                 ),
-                RaisedButton(
-                  child: Text('Send'),
-                  onPressed: () {
-                    RawDatagramSocket.bind(ob.address, ob.port)
-                        .then((RawDatagramSocket socket) {
-                      socket.send('Something'.codeUnits, ob.address, ob.port);
-                      socket.close();
-                    });
-                  },
-                )
               ],
             ),
             Expanded(
@@ -124,7 +130,33 @@ class _MyApp extends State<MyApp> {
                       style: TextStyle(fontSize: 15),
                     );
                   }),
-            )
+            ),
+//            Expanded(
+//              child:
+            Row(
+              children: <Widget>[
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(0.0),
+                    child: TextField(
+                        controller: sendText,
+                        decoration: InputDecoration(hintText: "Send Data")),
+                  ),
+                ),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: RaisedButton(
+                      child: Text('Send'),
+                      onPressed: () {
+                        sendData(data: sendText.text);
+                      },
+                    ),
+                  ),
+                ),
+              ],
+            ),
+//            ),
           ],
         ),
       ),
